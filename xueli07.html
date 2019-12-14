@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>xueliwo</title>
+	<style>
+	*{
+		padding: 0;
+		margin:0;
+	}
+	div{
+		display:block;
+	}
+	ul,li{
+		list-style: none;
+
+	}
+	.box{
+		width:1200px;
+		height:381px;
+		border:1px solid white;
+		margin:100px auto;
+		position: relative;
+		overflow: hidden;
+	}
+	.slider{
+		width:8400px;
+		position: absolute;
+		left:-1200px;
+	}
+	.slide{
+		width:1200px;
+		position: hidden;
+		float:left;
+	}
+	.box>span{
+		display: block;
+		width:30px;
+		height:50px;
+		text-align: center;
+		cursor: pointer;
+		color:;
+		top:175px;
+		line-height: 50px;
+		background: rgb(255,0,0);
+		font-size: 30px;
+		position: absolute;
+		opacity: 0; 
+	}
+	#left{
+		left:30px;
+	}
+	#right{
+		right:30px;
+	}
+	.nav{
+		position: absolute;
+		left: 500px;
+		bottom:20px;
+	}
+	.nav>li{
+		float:left;
+		width:20px;
+		height:20px;
+		background: #ccc;
+		cursor: :pointer;
+		margin:0 10px;
+		border-radius: 100%;
+	}
+	.nav .active{
+		background:red;
+	}
+
+	.tishi{
+		width:2400px;
+		height:20px;
+		border:1px solid #cccccc;
+		margin:100px auto;
+		margin-bottom: -80px;
+		overflow: hidden;
+		background : #cccccc;
+	}
+	.laba{
+		margin-left: 250px;
+		float: left;
+	}
+	.wenzi{
+		margin-top: 3px;
+		text-align: center;
+		height: 15px;
+		color: red;
+		font-size: 10px;
+		position: relative;
+		right: -552px;
+
+	}
+	.number{
+          margin-left: 5px;
+	}
+	.dong{
+		width: 900px;
+		height: 28px;
+		position: fixed;
+		left: 275px;
+		overflow: hidden;
+		font-size: 10px;
+		
+	}
+	.zizi{
+		font-size: 10px;
+         color: red;
+	}
+   </style>
+   	<script src="animate.js"></script>
+</head>
+<body>
+	<div class="tishi">
+	    <div class ="laba"><img src="images/a15.png"></div>
+	    <div class="dong">
+
+	    <div class="wenzi" id="wenzi"><p class="zizi">[温馨提示]近期有不少不法分子在网上骗人，请大家注意!!!</p></div>
+	    </div>
+	</div>
+
+	<div class="box" id="box">
+		<div class="slider" id="slider">
+			<div class="slide"><img src="images/b5.png"></div>
+			<div class="slide"><img src="images/b1.png"></div>
+			<div class="slide"><img src="images/b2.png"></div>
+			<div class="slide"><img src="images/b3.png"></div>
+			<div class="slide"><img src="images/b4.png"></div>
+			<div class="slide"><img src="images/b5.png"></div>
+			<div class="slide"><img src="images/b1.png"></div>
+		</div>
+		<span id="left"><</span>
+		<span id="right">></span>
+		<ul class="nav" id="nav">
+			<li class="active"><p class="number">1</p></li>
+			<li><p class="number">2</p></li>
+			<li><p class="number">3</p></li>
+			<li><p class="number">4</p></li>
+			<li><p class="number">5</p></li>
+		</ul>
+	</div>
+	<script>
+
+	function getStyle(obj,style){
+	    	if(obj.currentStyle){
+	    		return obj.currentStyle[style];
+	    	}
+	    	else{
+	    		return getComputedStyle(obj)[style];
+	    	}
+	    }
+     setInterval(function fun(){
+     	var a=parseInt(getStyle(wenzi,'right'));
+     	wenzi.style.right=a+7+"px";
+     	if(a>550){
+     		wenzi.style.right="-900px";
+     	}
+     },70)
+
+		var box = document.getElementById('box');
+		var oNavlist = document.getElementById('nav').children;
+		var slider = document.getElementById('slider');
+		var left = document.getElementById('left');
+		var right = document.getElementById('right');
+		var index = 1;
+		var timer;
+		var isMoving = false;
+		//	自动轮播
+		function next(){
+
+		if(isMoving){
+			return;
+		}
+                 isMoving = true; 	
+           	index++;
+           	navChange();
+                 animate(slider,{left:-1200*index},function(){
+                 	if(index>5){
+                 		slider.style.left="-1200px";
+                 		index = 1;
+                 	}
+                 	isMoving = false; 
+                 });
+           	}
+           
+
+		function prev(){
+
+		if(isMoving){
+            		return;
+            	}
+            	isMoving=true;
+            	index--;
+            	navChange();
+            	animate(slider,{left:1200*index},function(){
+            		if(index==0){
+            			slider.style.left='-6000px';
+            			index=5;
+            		}
+            		isMoving=false;
+            	});
+            }
+
+		var timer = setInterval(next,2000);
+
+		box.onmouseover = function(){
+			animate(left,{opacity:50});
+			animate (right,{opacity:50});
+			clearInterval(timer);
+		}
+		box.onmouseout = function(){
+			animate(left,{opacity:0});
+			animate (right,{opacity:0});
+			timer = setInterval(next,2000);
+		}
+
+		right.onclick = next;
+		left.onclick = prev;
+
+		//小按钮点击事件
+		for(var i=0;i<oNavlist.length;i++){
+		       oNavlist[i].index =i;
+            	oNavlist[i].onclick = function(){
+            		index=this.index+1;
+            		navChange();
+            		animate(slider,{left:-1200*index});
+            	}
+            }
+		//小按钮背景切换
+		function navChange(){
+			for(var i=0;i<oNavlist.length;i++){
+            		oNavlist[i].className='';
+            	}
+            	if(index===6){
+            		oNavlist[0].className="active";
+            	}else if(index===0){
+                   oNavlist[index-1].className="active";
+            	}
+            	else{
+            		oNavlist[index-1].className="active";
+            	}
+            }
+        
+	</script>
+</body>
+</html>
